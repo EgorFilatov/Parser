@@ -27,7 +27,7 @@ def get_content(html):
 
         news.append({
             'header': el.find('h2', class_='tm-article-snippet__title tm-article-snippet__title_h2').get_text(),
-            'category': el.find('div', class_='tm-article-snippet__hubs').get_text(strip=True),
+            'news_url': 'https://habr.com' + el.find('a', class_='tm-article-snippet__title-link').get('href'),
             'annotation': el.find('div', class_='tm-article-body tm-article-snippet__lead').get_text(strip=True).replace('Читать дальше →', '').replace('Читать далее', ''),
             'image': image,
 
@@ -40,13 +40,18 @@ def save_news(news_list, path):
 
 
 def parse():
-    i = 0
-    while i < page_number:
-        html = get_html(url+page_list[i])
-        if html.status_code == 200:
-            print(get_content(html.text))
-        else:
-            print('error')
+    html = get_html(url + page_list[0])
+    if html.status_code == 200:
+        print(get_content(html.text))
+    else:
+        print('error')
+    #i = 0
+    #while i < page_number:
+    #    html = get_html(url+page_list[i])
+    #    if html.status_code == 200:
+    #        print(get_content(html.text))
+    #    else:
+    #        print('error')
         i = i + 1
 
 
