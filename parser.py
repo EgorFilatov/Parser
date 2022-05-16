@@ -24,19 +24,20 @@ def get_content(html):
             image = el.find_all('img')[-1].get('src')
         else:
             image = 'no'
-
-        news.append({
+        url = 'https://habr.com' + el.find('a', class_='tm-article-snippet__title-link').get('href')
+        news_dictionary ={
             'header': el.find('h2', class_='tm-article-snippet__title tm-article-snippet__title_h2').get_text(),
-            'news_url': 'https://habr.com' + el.find('a', class_='tm-article-snippet__title-link').get('href'),
+            'news_url': url,
             'annotation': el.find('div', class_='tm-article-body tm-article-snippet__lead').get_text(strip=True).replace('Читать дальше →', '').replace('Читать далее', ''),
             'image': image,
-
-        })
+        }
+        html = requests.get(url, headers=HEADERS, params=None)
+        soup = BeautifulSoup(html.text, 'html.parser')
+        items = soup.find_all('article', class_='tm-article-presenter__content')
+        for el in items:
+            news_dictionary['full_text'] = el.find('div', class_='article-formatted-body').get_text(strip=True)
+        news.append(news_dictionary)
     return news
-
-
-def save_news(news_list, path):
-    pass
 
 
 def parse():
@@ -52,7 +53,7 @@ def parse():
     #        print(get_content(html.text))
     #    else:
     #        print('error')
-        i = i + 1
+    #    i = i + 1
 
 
 parse()
